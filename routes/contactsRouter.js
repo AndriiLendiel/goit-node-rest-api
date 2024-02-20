@@ -5,22 +5,26 @@ const {
   deleteContact,
   createContact,
   updateContact,
+  updateStatusContact 
 } = require ("../controllers/contactsControllers.js");
-const {validateBody} = require('../helpers/');
+const {validateBody, validateID} = require('../middleWares');
 
-const {createContactSchema} = require('../schemas/contactsSchemas.js')
-const {updateContactSchema} = require('../schemas/contactsSchemas.js')
+
+const {schemas} = require('../models/contact.js')
 
 const contactsRouter = express.Router();
 
 contactsRouter.get("/", getAllContacts);
 
-contactsRouter.get("/:id", getOneContact);
+contactsRouter.get("/:id", validateID, getOneContact);
 
-contactsRouter.delete("/:id", deleteContact);
+contactsRouter.delete("/:id", validateID, deleteContact);
 
-contactsRouter.post("/", validateBody(createContactSchema), createContact);
+contactsRouter.post("/", validateBody(schemas.createContactSchema), createContact);
 
-contactsRouter.put("/:id", validateBody(updateContactSchema), updateContact);
+contactsRouter.put("/:id", validateID, validateBody(schemas.updateContactSchema), updateContact);
+
+contactsRouter.put("/:id/favorite", validateID, validateBody(schemas.updateFavoriteSchema), updateStatusContact );
+
 
 module.exports = contactsRouter;
