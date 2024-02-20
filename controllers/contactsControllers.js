@@ -30,7 +30,7 @@ try {
 
 const deleteContact = async (req, res, next) => {
     const {id} = req.params
-    const result = await contactsService.removeContact(id)
+    const result = await Contact.findByIdAndDelete(id)
     if(!result) {
         throw HttpError(404)
     }
@@ -41,7 +41,7 @@ const deleteContact = async (req, res, next) => {
 
 const createContact = async (req, res, next) => {
 try {
-    const result = await contactsService.addContact(req.body)
+    const result = await  Contact.create(req.body)
     res.status(201).json(result)
 } catch (error) {
     next(error)
@@ -51,7 +51,7 @@ try {
 const updateContact = async (req, res, next) => {
 try {
     const {id} = req.params;
-    const result = await contactsService.updateById(id, req.body)
+    const result = await  Contact.findByIdAndUpdate(id, req.body)
     if(!result) {
         throw HttpError(404)
     }
