@@ -1,12 +1,12 @@
 const contactsService = require ("../services/contactsServices.js");
-
+const {Contact} = require('../models/contact.js')
 
 const {HttpError} = require('../helpers')
 console.log(HttpError);
 
 const getAllContacts = async (req, res, next) => {
     try {
-        const result = await contactsService.listContacts()
+        const result = await Contact.find()
         res.status(200).json(result)
     } catch (error) {
         res.status(500).json({
