@@ -6,7 +6,10 @@ console.log(HttpError);
 
 const getAllContacts = async (req, res, next) => {
     try {
-        const result = await Contact.find()
+        const {page = 1, limit= 10} = req.query;
+        const skip = (page -1) * limit
+        const {_id: owner} = req.user
+        const result = await Contact.find({owner}, "-createdAt -updatedAt", {skip, limit } ).populate("owner", "name email")
         res.status(200).json(result)
     } catch (error) {
         res.status(500).json({
@@ -41,12 +44,17 @@ const deleteContact = async (req, res, next) => {
 
 const createContact = async (req, res, next) => {
 try {
-    const result = await  Contact.create(req.body)
+    const {_id: owner} = req.user
+
+    const result = await  Contact.create({...req.body, owner})
+    console.log(result);
     res.status(201).json(result)
 } catch (error) {
     next(error)
 }
-};
+
+}
+
 
 const updateContact = async (req, res, next) => {
 try {

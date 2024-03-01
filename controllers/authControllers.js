@@ -44,6 +44,17 @@ const login = async(req,res) => {
   })
 }
 
+const logout = async(req,res) => {
+console.log(req.user);
+const {_id} = req.user
+await User.findByIdAndUpdate(_id,{token : ''})
+
+res.json({
+  message: 'Logout success'
+})
+
+}
+
 const getCurrent = async(req,res) => {
   const {name,email} = req.user
   res.json({
@@ -55,5 +66,6 @@ const getCurrent = async(req,res) => {
 module.exports = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
-    getCurrent: ctrlWrapper(getCurrent)
+    getCurrent: ctrlWrapper(getCurrent),
+    logout: ctrlWrapper(logout)
 }
