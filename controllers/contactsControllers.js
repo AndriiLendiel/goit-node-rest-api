@@ -7,10 +7,14 @@ console.log(HttpError);
 const getAllContacts = async (req, res, next) => {
     try {
         console.log(req.query);
-        const {page = 1, limit= 10, favorite} = req.query;
+        const {page = 1, limit= 20, favorite} = req.query;
+        console.log(favorite);
         const skip = (page -1) * limit
         const {_id: owner} = req.user
-        const result = await Contact.find({owner, favorite}, "-createdAt -updatedAt", {skip, limit } ).populate("owner", "name email")
+        let searchList = {};
+        favorite ?  searchList = {owner, favorite} :  searchList = {owner}
+        
+        const result = await Contact.find(searchList, "-createdAt -updatedAt", {skip, limit } ).populate("owner", "name email")
 
         res.status(200).json(result)
     } catch (error) {
