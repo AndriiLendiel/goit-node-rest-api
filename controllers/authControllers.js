@@ -62,10 +62,24 @@ const getCurrent = async(req,res) => {
   })
 }
 
+const updateSubscription = async(req,res) => {
+  try {
+    const {_id,name} = req.user
+    const result = await User.findByIdAndUpdate(_id, req.body, {new: true});
+    const { subscription} = req.body
+    console.log(req.body);
+    res.json({
+      name, subscription
+    })
+  } catch (error) {
+    
+  }
+}
 
 module.exports = {
     register: ctrlWrapper(register),
     login: ctrlWrapper(login),
     getCurrent: ctrlWrapper(getCurrent),
-    logout: ctrlWrapper(logout)
+    logout: ctrlWrapper(logout),
+    updateSubscription: ctrlWrapper(updateSubscription)
 }

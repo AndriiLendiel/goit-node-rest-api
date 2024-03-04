@@ -1,7 +1,7 @@
 const express = require('express')
 
 
-const {register, login, logout, getCurrent} = require('../controllers/authControllers')
+const {register, login, logout, getCurrent, updateSubscription} = require('../controllers/authControllers')
 const {validateBody, authenticate} = require('../middleWares')
 
 const authRouter = express.Router()
@@ -15,6 +15,6 @@ authRouter.post('/users/logout', authenticate, logout)
 
 authRouter.get('/users/current', authenticate, getCurrent)
 
-
+authRouter.patch('/users/subscription', authenticate, validateBody(schemas.subscriptionSchema), updateSubscription)
 
 module.exports = authRouter
