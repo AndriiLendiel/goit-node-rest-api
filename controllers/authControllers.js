@@ -3,12 +3,12 @@ const jwt = require('jsonwebtoken');
 const gravatar = require('gravatar');
 const path = require('path')
 const fs = require('fs/promises')
-
+const jimp = require('jimp')
 
 const {SECRET_KEY} = process.env
 const {User} = require('../models/user')
 const {HttpError, ctrlWrapper} = require('../helpers')
-
+const tempDir = path.join(__dirname, '../', 'temp')
 const avatarsDir = path.join(__dirname, '../', 'public', 'avatars')
 
 const register = async(req,res) => {
@@ -88,9 +88,13 @@ const updateAvatar = async (req, res) => {
   const {path: temUpload, originalname} = req.file;
   const fileName = `${_id}_${originalname}`;
   const resultUpload = path.join(avatarsDir, fileName)
+  const NormalizedImage = await jimp.read(temUpload)
+  await NormalizedImage.resize(250, 250)
+  .writeAsync(temUpload)
+
   await fs.rename(temUpload, resultUpload)
   const avatarURL = path.join('avatars', fileName)
-  await User.findByIdAndUpdate(_id, {avatarURL})
+  await  User.findByIdAndUpdate(_id, {avatarURL})
 
   res.json({
     avatarURL
